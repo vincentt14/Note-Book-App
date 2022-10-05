@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 const SearchBar = ({ keyword, keywordChange }) => {
   return (
     <section className="search-bar">
-      <input type="text" placeholder="Cari berdasarkan judul ..." onChange={(event) => keywordChange(event.target.value)} />
+      <input type="text" placeholder="Cari berdasarkan judul ..." value={keyword} onChange={(event) => keywordChange(event.target.value)} />
     </section>
   );
 };

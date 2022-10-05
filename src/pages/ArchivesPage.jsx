@@ -1,40 +1,55 @@
 import React from "react";
-import { getAllNotes } from "../utils/local-data";
-import { useSearchParams } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
-import { showFormattedDate } from "../utils/index";
 import NoteArchivesList from "../components/NoteArchivesList";
+import { searchEngineUtility } from "../utils/utility";
+import PropTypes from "prop-types";
 
 class ArchivesPage extends React.Component {
   constructor(props) {
     super(props);
 
-    const newData = [];
-    for (let i = 0; i < getAllNotes().length; i++) {
-      const { id, title, body, archived } = getAllNotes()[i];
-      newData.push({
-        id: id,
-        title: title,
-        body: body,
-        createdAt: showFormattedDate(getAllNotes()[i].createdAt),
-        archived: archived,
-      });
-    }
-
     this.state = {
-      notes: newData,
+      notes: props.notes,
+      filteredNotes: props.notes,
+      keyword: props.keyword,
     };
+
+    this.keywordChangeHandler = this.keywordChangeHandler.bind(this);
+  }
+
+  componentDidMount() {
+    if (this.state.keyword !== "") {
+      const filteredNotes = searchEngineUtility(this.state.notes, this.props.keyword);
+      this.setState({ filteredNotes });
+    }
+  }
+
+  keywordChangeHandler(keyword) {
+    if (keyword === undefined || keyword === null || keyword === "") {
+      this.setState({ filteredNotes: this.state.notes, keyword });
+      this.props.keywordChange("");
+    } else {
+      const filteredNotes = searchEngineUtility(this.state.notes, keyword);
+      this.setState({ filteredNotes, keyword });
+      this.props.keywordChange(keyword);
+    }
   }
 
   render() {
     return (
       <section className="archives-page">
         <h2>Catatan Arsip</h2>
-        <SearchBar />
-        <NoteArchivesList notes={this.state.notes}/>
+        <SearchBar keyword={this.state.keyword} keywordChange={this.keywordChangeHandler} />
+        <NoteArchivesList notes={this.state.filteredNotes} />
       </section>
     );
   }
 }
+
+ArchivesPage.propTypes = {
+  keywordChange: PropTypes.func.isRequired,
+  notes: PropTypes.arrayOf(PropTypes.object).isRequired,
+  keyword: PropTypes.string.isRequired,
+};
 
 export default ArchivesPage;

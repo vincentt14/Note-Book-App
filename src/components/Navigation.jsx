@@ -1,13 +1,21 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Navigation = () => {
+  const location = useLocation();
+
   return (
     <nav className="navigation">
       <ul>
-        <li>
-          <Link to="/archives">Arsip</Link>
-        </li>
+        {location.pathname === "/" ? (
+          <li>
+            <Link to="/archives">Arsip</Link>
+          </li>
+        ) : (
+          <li>
+            <Link to="/">Back to Home</Link>
+          </li>
+        )}
       </ul>
     </nav>
   );

@@ -1,5 +1,6 @@
 import React from "react";
 import NoteItem from "./NoteItem";
+import PropTypes from "prop-types";
 
 const NoteArchivesList = ({ notes }) => {
   const archivedNotes = notes.filter((note) => note.archived === true);
@@ -19,6 +20,10 @@ const NoteArchivesList = ({ notes }) => {
       </section>
     );
   }
+};
+
+NoteArchivesList.propTypes = {
+  notes: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default NoteArchivesList;
